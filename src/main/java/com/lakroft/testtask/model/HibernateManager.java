@@ -1,9 +1,6 @@
 package com.lakroft.testtask.model;
 
-import com.lakroft.testtask.Api;
 import com.lakroft.testtask.JsonManager;
-import com.lakroft.testtask.model.User;
-import net.minidev.json.JSONObject;
 import org.hibernate.LockMode;
 import org.hibernate.PessimisticLockException;
 import org.hibernate.Session;
@@ -76,23 +73,30 @@ public class HibernateManager {
                 if (toUser == null) return JsonManager.getError("No 'to' user").toString();
 
                 fromUser.setBalance(fromUser.getBalance().subtract(amount));//уменьшить на amount
-                session.save(fromUser);//сохранить
+                session.update(fromUser);//сохранить
 
                 toUser.setBalance(toUser.getBalance().add(amount));//увеличить на amount
-                session.save(toUser);//сохранить
+                session.update(toUser);//сохранить
                 session.getTransaction().commit();//transaction commit
 
                 return JsonManager.getSuccess().toString();
-            } catch (PessimisticLockException ignored) { }
+            } catch (PessimisticLockException e) {
+                try {
+                    Thread.sleep(10L);
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                    return JsonManager.getError("Database is busy. Try later").toString();
+                }
+            }
         }
         return JsonManager.getError("Database is busy. Try later").toString();
     }
 
-    public static BigDecimal summ() {
-        BigDecimal summ = new BigDecimal(0);
+    public static BigDecimal sum() {
+        BigDecimal sum = new BigDecimal(0);
         for (User user : loadAll()) {
-            summ = summ.add(user.getBalance());
+            sum = sum.add(user.getBalance());
         }
-        return summ;
+        return sum;
     }
 }

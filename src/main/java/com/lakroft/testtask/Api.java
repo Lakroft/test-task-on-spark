@@ -14,9 +14,9 @@ import static spark.Spark.*;
 public class Api {
 
     public static void initApi() {
-        get("/summ", (request, response) -> {
+        get("/sum", (request, response) -> {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("summ", HibernateManager.summ());
+            jsonObject.put("sum", HibernateManager.sum());
             return jsonObject.toString();
         });
 

@@ -24,7 +24,7 @@ public class HibernateManagerTest {
     @Test
     public void transferTest() {
 
-        BigDecimal summOnStart = HibernateManager.summ();
+        BigDecimal sumOnStart = HibernateManager.sum();
 
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
         executor.execute(new TransferTask(users.get(0).getId(), users.get(1).getId(), new BigDecimal(10)));
@@ -39,8 +39,8 @@ public class HibernateManagerTest {
 
         List<User> users = HibernateManager.loadAll();
         users.forEach(x -> System.out.printf("- %s%n", x));
-        System.out.println("SUMM:" + HibernateManager.summ());
-        assert(HibernateManager.summ().equals(summOnStart));
+        System.out.println("SUM:" + HibernateManager.sum());
+        assert(HibernateManager.sum().equals(sumOnStart));
     }
 
     class TransferTask implements Runnable {
